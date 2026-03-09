@@ -16,6 +16,8 @@ import BedtimeChart from "@/components/BedtimeChart";
 import ActivityTimeline from "@/components/ActivityTimeline";
 import DayOfWeekChart from "@/components/DayOfWeekChart";
 import PersonalBests from "@/components/PersonalBests";
+import Titles from "@/components/Titles";
+import HealthCalendar from "@/components/HealthCalendar";
 
 export const revalidate = 300;
 
@@ -196,6 +198,13 @@ export default async function UserDetailPage({
             <p className="text-slate-400 text-xs font-mono mt-1">
               {user.latestDay ?? "—"} · 過去90日のデータ
             </p>
+            <div className="mt-2">
+              <Titles
+                sleepHistory={sleepHistory}
+                activityHistory={activityHistory}
+                sleepDetails={sleepDetailsLong}
+              />
+            </div>
           </div>
           <div className="flex items-center gap-6">
             <div className="text-center">
@@ -377,6 +386,23 @@ export default async function UserDetailPage({
             activityHistory={activityHistory}
             sleepDetails={sleepDetailsLong}
           />
+        </div>
+
+        {/* Health Calendar */}
+        <div className="card rounded-2xl p-6">
+          <h2 className="text-sm font-bold mb-4">体調カレンダー</h2>
+          <div className="space-y-6">
+            <HealthCalendar
+              data={sleepHistory.map((s) => ({ day: s.day, score: s.score }))}
+              title="睡眠スコア"
+            />
+            {activityHistory.length > 0 && (
+              <HealthCalendar
+                data={activityHistory.map((a) => ({ day: a.day, score: a.score }))}
+                title="活動スコア"
+              />
+            )}
+          </div>
         </div>
 
         {/* Day of week patterns */}
