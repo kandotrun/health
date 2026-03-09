@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { UserHealth } from "@/lib/types";
 import { conditionConfig, computePowerLevel } from "@/lib/condition";
 import ScoreRing from "./ScoreRing";
@@ -149,6 +150,14 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
           </span>
         </div>
       )}
+
+      {/* Detail link */}
+      <Link
+        href={`/user/${user.name.toLowerCase()}`}
+        className="block px-5 py-3 border-t border-black/[0.04] text-center text-xs text-neutral-400 hover:text-neutral-600 hover:bg-black/[0.02] transition font-mono"
+      >
+        詳細を見る →
+      </Link>
     </div>
   );
 }

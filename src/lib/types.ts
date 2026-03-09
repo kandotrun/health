@@ -39,6 +39,15 @@ export interface DailyReadiness {
   contributors: ReadinessContributors;
 }
 
+export interface ActivityContributors {
+  meet_daily_targets: number | null;
+  move_every_hour: number | null;
+  recovery_time: number | null;
+  stay_active: number | null;
+  training_frequency: number | null;
+  training_volume: number | null;
+}
+
 export interface DailyActivity {
   id: string;
   day: string;
@@ -51,6 +60,7 @@ export interface DailyActivity {
   medium_activity_met_minutes: number;
   low_activity_met_minutes: number;
   sedentary_met_minutes: number;
+  contributors: ActivityContributors;
   timestamp: string;
 }
 
