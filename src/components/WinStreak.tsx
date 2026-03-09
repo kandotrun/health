@@ -8,8 +8,13 @@ interface Props {
 export default function WinStreak({ users }: Props) {
   if (users.length < 2) return null;
 
-  // Compare latest power levels
-  const powers = users.map((u) =>
+  const today = new Date().toISOString().slice(0, 10);
+
+  // 今日のデータがある人だけでバトル判定
+  const todayUsers = users.filter((u) => u.latestDay === today);
+  if (todayUsers.length < 2) return null;
+
+  const powers = todayUsers.map((u) =>
     computePowerLevel(u.sleep, u.readiness, u.activity)
   );
 
@@ -19,8 +24,8 @@ export default function WinStreak({ users }: Props) {
 
   if (isTie || maxPower === 0) return null;
 
-  const winner = users[winnerIdx];
-  const loser = users[1 - winnerIdx];
+  const winner = todayUsers[winnerIdx];
+  const loser = todayUsers[1 - winnerIdx];
   const diff = powers[winnerIdx] - powers[1 - winnerIdx];
 
   return (

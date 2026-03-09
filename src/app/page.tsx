@@ -25,12 +25,17 @@ function buildTrend(user: UserHealth) {
 export default async function Home() {
   const users = await fetchAllUsers();
 
-  const powers = users.map((u) =>
-    computePowerLevel(u.sleep, u.readiness, u.activity)
-  );
-  const maxPower = Math.max(...powers);
-  const hasMultiple = users.length > 1;
-  const hasTie = hasMultiple && powers.filter((p) => p === maxPower).length > 1;
+  const today = new Date().toISOString().slice(0, 10);
+
+  // 今日のデータがある人だけバトル対象
+  const powers = users.map((u) => {
+    const isTodayData = u.latestDay === today;
+    return isTodayData ? computePowerLevel(u.sleep, u.readiness, u.activity) : 0;
+  });
+  const activePowers = powers.filter((p) => p > 0);
+  const maxPower = activePowers.length > 0 ? Math.max(...activePowers) : 0;
+  const hasMultiple = activePowers.length > 1;
+  const hasTie = hasMultiple && activePowers.filter((p) => p === maxPower).length > 1;
 
   const trendColors = ["#3b82f6", "#ef4444", "#22c55e", "#f59e0b"];
 

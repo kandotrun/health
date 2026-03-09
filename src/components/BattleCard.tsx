@@ -44,6 +44,37 @@ export default function BattleCard({ user, isWinner }: BattleCardProps) {
     );
   }
 
+  // 今日のデータがない場合は同期促すカードを表示
+  if (stale && user.latestDay) {
+    return (
+      <div className="card p-6 flex-1 animate-fade-up">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold capitalize">{user.name}</h2>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 font-medium">
+            {daysAgoLabel(user.latestDay)}前
+          </span>
+        </div>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <span className="text-3xl mb-3">📡</span>
+          <p className="text-sm font-medium text-slate-600 mb-1">
+            今日のデータがありません
+          </p>
+          <p className="text-xs text-slate-400">
+            アプリを開いてデータを同期してください
+          </p>
+        </div>
+        <div className="text-center">
+          <Link
+            href={`/user/${user.name.toLowerCase()}`}
+            className="text-xs text-blue-500 hover:text-blue-600 font-medium"
+          >
+            過去のデータを見る →
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`card card-interactive flex-1 overflow-hidden animate-fade-up ${
