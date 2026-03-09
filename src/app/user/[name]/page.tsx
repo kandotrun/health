@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -27,13 +29,6 @@ import DayOfWeekChart from "@/components/DayOfWeekChart";
 import PersonalBests from "@/components/PersonalBests";
 import Titles from "@/components/Titles";
 import HealthCalendar from "@/components/HealthCalendar";
-
-export const revalidate = 300;
-
-export async function generateStaticParams() {
-  const users = await getAvailableUsers();
-  return users.map((name) => ({ name: name.toLowerCase() }));
-}
 
 export default async function UserDetailPage({
   params,

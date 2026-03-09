@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { fetchAllUsers } from "@/lib/fetchAllUsers";
 import { computePowerLevel } from "@/lib/condition";
 import BattleCard from "@/components/BattleCard";
@@ -6,7 +8,7 @@ import WinStreak from "@/components/WinStreak";
 import StressBattle from "@/components/StressBattle";
 import type { UserHealth } from "@/lib/types";
 
-export const revalidate = 300;
+
 
 function buildTrend(user: UserHealth) {
   const sleepMap = new Map(user.sleepTrend.map((s) => [s.day, s.score]));

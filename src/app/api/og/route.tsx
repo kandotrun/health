@@ -1,8 +1,8 @@
+export const dynamic = "force-dynamic";
+
 import { ImageResponse } from "next/og";
 import { fetchAllUsers } from "@/lib/fetchAllUsers";
 import { computePowerLevel } from "@/lib/condition";
-
-export const revalidate = 300;
 
 export async function GET() {
   const users = await fetchAllUsers();
