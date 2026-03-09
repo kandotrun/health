@@ -13,6 +13,12 @@ function formatDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+function daysBeforeDate(base: string, n: number): string {
+  const d = new Date(base + "T00:00:00Z");
+  d.setDate(d.getDate() - n);
+  return formatDate(d);
+}
+
 function daysAgo(n: number): string {
   const d = new Date();
   d.setDate(d.getDate() - n);
@@ -34,38 +40,48 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
         sleepTrend: [],
         readinessTrend: [],
         condition: "fair",
+        latestDay: null,
         error: "No users configured. Set OURA_USERS in your environment.",
       },
     ];
   }
 
   const today = formatDate(new Date());
-  const weekAgo = daysAgo(7);
 
   return Promise.all(
     users.map(async ({ name, token }): Promise<UserHealth> => {
       try {
-        const [
-          sleepToday,
-          readinessToday,
-          activityToday,
-          heartRate,
-          personalInfo,
-          sleepTrend,
-          readinessTrend,
-        ] = await Promise.all([
-          fetchDailySleep(token, daysAgo(1), today),
-          fetchDailyReadiness(token, daysAgo(1), today),
-          fetchDailyActivity(token, daysAgo(1), today),
-          fetchHeartRate(token),
-          fetchPersonalInfo(token),
-          fetchDailySleep(token, weekAgo, today),
-          fetchDailyReadiness(token, weekAgo, today),
-        ]);
+        // First, try to get recent data (last 7 days)
+        let sleepRecent = await fetchDailySleep(token, daysAgo(7), today);
 
-        const sleep = sleepToday.at(-1) ?? null;
-        const readiness = readinessToday.at(-1) ?? null;
-        const activity = activityToday.at(-1) ?? null;
+        // If no recent data, look back further to find the latest available data
+        if (sleepRecent.length === 0) {
+          const probe = await fetchDailySleep(token, daysAgo(365), today);
+          if (probe.length > 0) {
+            const latestDay = probe[probe.length - 1].day;
+            const weekBefore = daysBeforeDate(latestDay, 7);
+            sleepRecent = await fetchDailySleep(token, weekBefore, latestDay);
+          }
+        }
+
+        // Determine the "latest day" for fetching other data
+        const latestDay =
+          sleepRecent.length > 0
+            ? sleepRecent[sleepRecent.length - 1].day
+            : today;
+        const weekBefore = daysBeforeDate(latestDay, 7);
+
+        const [readinessTrend, activityTrend, heartRate, personalInfo] =
+          await Promise.all([
+            fetchDailyReadiness(token, weekBefore, latestDay),
+            fetchDailyActivity(token, weekBefore, latestDay),
+            fetchHeartRate(token, latestDay),
+            fetchPersonalInfo(token),
+          ]);
+
+        const sleep = sleepRecent.at(-1) ?? null;
+        const readiness = readinessTrend.at(-1) ?? null;
+        const activity = activityTrend.at(-1) ?? null;
         const condition = computeCondition(sleep, readiness);
 
         return {
@@ -75,9 +91,10 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
           readiness,
           activity,
           heartRate,
-          sleepTrend,
-          readinessTrend,
+          sleepTrend: sleepRecent,
+          readinessTrend: readinessTrend,
           condition,
+          latestDay,
         };
       } catch (err) {
         return {
@@ -90,6 +107,7 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
           sleepTrend: [],
           readinessTrend: [],
           condition: "fair",
+          latestDay: null,
           error:
             err instanceof Error
               ? err.message

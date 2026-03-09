@@ -83,5 +83,6 @@ export interface UserHealth {
   sleepTrend: DailySleep[];
   readinessTrend: DailyReadiness[];
   condition: ConditionLevel;
+  latestDay: string | null;
   error?: string;
 }

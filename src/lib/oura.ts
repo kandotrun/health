@@ -84,14 +84,17 @@ export async function fetchDailyActivity(
 }
 
 export async function fetchHeartRate(
-  token: string
+  token: string,
+  day?: string
 ): Promise<HeartRateEntry[]> {
-  const now = new Date();
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
+  const baseDate = day ? new Date(day + "T00:00:00Z") : new Date();
+  const start = new Date(baseDate);
+  start.setUTCHours(0, 0, 0, 0);
+  const end = new Date(baseDate);
+  end.setUTCHours(23, 59, 59, 999);
   return ouraFetch<HeartRateEntry>("heartrate", token, {
     start_datetime: start.toISOString(),
-    end_datetime: now.toISOString(),
+    end_datetime: end.toISOString(),
   });
 }
 

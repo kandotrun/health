@@ -47,7 +47,9 @@ export default function UserCard({ user }: UserCardProps) {
       <div className="px-8 pt-8 pb-4 flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold capitalize">{user.name}</h2>
-          <p className="text-neutral-400 text-sm mt-0.5">Today</p>
+          <p className="text-neutral-400 text-sm mt-0.5">
+            {user.latestDay ?? "Today"}
+          </p>
         </div>
         <ConditionBadge condition={user.condition} />
       </div>
