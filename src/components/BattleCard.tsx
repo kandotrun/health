@@ -80,8 +80,8 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
       {/* Power Level */}
       <div className="px-5 pb-4">
         <div className="flex items-baseline justify-between mb-1.5">
-          <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono">
-            power
+          <span className="text-[10px] text-neutral-400 tracking-widest font-mono">
+            戦闘力
           </span>
           <span className="text-sm font-bold tabular-nums font-mono">
             {power}
@@ -104,27 +104,27 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
 
       {/* Stats */}
       <div className="px-5 py-3.5 grid grid-cols-2 gap-3 border-t border-black/[0.04]">
-        <Stat label="steps" value={steps.toLocaleString()} />
-        <Stat label="cal" value={`${calories}`} unit="kcal" />
-        <Stat label="hr" value={latestHR ? `${latestHR}` : "—"} unit={latestHR ? "bpm" : undefined} />
-        <Stat label="resting" value={restingHR ? `${restingHR}` : "—"} unit={restingHR ? "bpm" : undefined} />
+        <Stat label="歩数" value={steps.toLocaleString()} />
+        <Stat label="消費" value={`${calories}`} unit="kcal" />
+        <Stat label="心拍" value={latestHR ? `${latestHR}` : "—"} unit={latestHR ? "bpm" : undefined} />
+        <Stat label="安静時" value={restingHR ? `${restingHR}` : "—"} unit={restingHR ? "bpm" : undefined} />
       </div>
 
       {/* Gen4 Stats */}
       {(user.spo2 || user.stress || user.resilience || user.cardiovascularAge || user.vo2Max) && (
         <div className="px-5 py-3.5 grid grid-cols-2 gap-3 border-t border-black/[0.04]">
           {user.spo2?.spo2_percentage && (
-            <Stat label="SpO2" value={`${user.spo2.spo2_percentage.average}`} unit="%" />
+            <Stat label="血中酸素" value={`${user.spo2.spo2_percentage.average}`} unit="%" />
           )}
           {user.stress && (
             <Stat
-              label="stress"
+              label="ストレス"
               value={user.stress.day_summary ?? "—"}
             />
           )}
           {user.resilience && (
             <Stat
-              label="resilience"
+              label="回復力"
               value={user.resilience.level ?? "—"}
             />
           )}
@@ -136,7 +136,7 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
             />
           )}
           {user.vo2Max?.vo2_max != null && (
-            <Stat label="VO2 Max" value={`${user.vo2Max.vo2_max}`} />
+            <Stat label="最大酸素摂取量" value={`${user.vo2Max.vo2_max}`} />
           )}
         </div>
       )}
@@ -144,8 +144,8 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
       {/* Winner */}
       {isWinner && (
         <div className="px-5 py-2.5 border-t border-amber-200/40 bg-amber-50/50 text-center">
-          <span className="text-amber-600 text-xs font-bold tracking-widest uppercase">
-            👑 winner
+          <span className="text-amber-600 text-xs font-bold tracking-widest">
+            👑 勝利
           </span>
         </div>
       )}
