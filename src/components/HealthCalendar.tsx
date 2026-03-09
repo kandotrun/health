@@ -42,10 +42,10 @@ export default function HealthCalendar({ data, title = "体調カレンダー" }
 
   // Determine range: latest day back 365 days
   const sortedDays = data.map((d) => d.day).sort();
+  const firstDay = sortedDays[0];
   const lastDay = sortedDays[sortedDays.length - 1];
   const endDate = new Date(lastDay + "T00:00:00");
-  const startDate = new Date(endDate);
-  startDate.setDate(startDate.getDate() - 364);
+  const startDate = new Date(firstDay + "T00:00:00");
 
   // Generate all weeks
   // Start from the Sunday of the start week

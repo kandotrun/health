@@ -128,7 +128,7 @@ export async function fetchUserDetail(
       ? sleepRecent[sleepRecent.length - 1].day
       : today;
 
-  const historyStart = daysBeforeDate(latestDay, 365);
+  const historyStart = "2020-01-01"; // 全期間取得
 
   const [
     sleepHistory,
