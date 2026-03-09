@@ -4,6 +4,11 @@ import type {
   DailyActivity,
   HeartRateEntry,
   PersonalInfo,
+  DailySpO2,
+  DailyStress,
+  DailyResilience,
+  DailyCardiovascularAge,
+  VO2Max,
 } from "./types";
 
 const BASE = "https://api.ouraring.com/v2/usercollection";
@@ -95,6 +100,61 @@ export async function fetchHeartRate(
   return ouraFetch<HeartRateEntry>("heartrate", token, {
     start_datetime: start.toISOString(),
     end_datetime: end.toISOString(),
+  });
+}
+
+export async function fetchDailySpO2(
+  token: string,
+  startDate?: string,
+  endDate?: string
+): Promise<DailySpO2[]> {
+  return ouraFetch<DailySpO2>("daily_spo2", token, {
+    start_date: startDate ?? daysAgo(1),
+    end_date: endDate ?? formatDate(new Date()),
+  });
+}
+
+export async function fetchDailyStress(
+  token: string,
+  startDate?: string,
+  endDate?: string
+): Promise<DailyStress[]> {
+  return ouraFetch<DailyStress>("daily_stress", token, {
+    start_date: startDate ?? daysAgo(1),
+    end_date: endDate ?? formatDate(new Date()),
+  });
+}
+
+export async function fetchDailyResilience(
+  token: string,
+  startDate?: string,
+  endDate?: string
+): Promise<DailyResilience[]> {
+  return ouraFetch<DailyResilience>("daily_resilience", token, {
+    start_date: startDate ?? daysAgo(1),
+    end_date: endDate ?? formatDate(new Date()),
+  });
+}
+
+export async function fetchDailyCardiovascularAge(
+  token: string,
+  startDate?: string,
+  endDate?: string
+): Promise<DailyCardiovascularAge[]> {
+  return ouraFetch<DailyCardiovascularAge>("daily_cardiovascular_age", token, {
+    start_date: startDate ?? daysAgo(1),
+    end_date: endDate ?? formatDate(new Date()),
+  });
+}
+
+export async function fetchVO2Max(
+  token: string,
+  startDate?: string,
+  endDate?: string
+): Promise<VO2Max[]> {
+  return ouraFetch<VO2Max>("vo2_max", token, {
+    start_date: startDate ?? daysAgo(1),
+    end_date: endDate ?? formatDate(new Date()),
   });
 }
 

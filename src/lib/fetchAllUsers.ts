@@ -6,6 +6,11 @@ import {
   fetchDailyActivity,
   fetchHeartRate,
   fetchPersonalInfo,
+  fetchDailySpO2,
+  fetchDailyStress,
+  fetchDailyResilience,
+  fetchDailyCardiovascularAge,
+  fetchVO2Max,
 } from "./oura";
 import { computeCondition } from "./condition";
 
@@ -37,6 +42,11 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
         readiness: null,
         activity: null,
         heartRate: [],
+        spo2: null,
+        stress: null,
+        resilience: null,
+        cardiovascularAge: null,
+        vo2Max: null,
         sleepTrend: [],
         readinessTrend: [],
         condition: "fair",
@@ -51,10 +61,9 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
   return Promise.all(
     users.map(async ({ name, token }): Promise<UserHealth> => {
       try {
-        // First, try to get recent data (last 7 days)
+        // Try recent data first, fall back to historical
         let sleepRecent = await fetchDailySleep(token, daysAgo(7), today);
 
-        // If no recent data, look back further to find the latest available data
         if (sleepRecent.length === 0) {
           const probe = await fetchDailySleep(token, daysAgo(365), today);
           if (probe.length > 0) {
@@ -64,20 +73,33 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
           }
         }
 
-        // Determine the "latest day" for fetching other data
         const latestDay =
           sleepRecent.length > 0
             ? sleepRecent[sleepRecent.length - 1].day
             : today;
         const weekBefore = daysBeforeDate(latestDay, 7);
 
-        const [readinessTrend, activityTrend, heartRate, personalInfo] =
-          await Promise.all([
-            fetchDailyReadiness(token, weekBefore, latestDay),
-            fetchDailyActivity(token, weekBefore, latestDay),
-            fetchHeartRate(token, latestDay),
-            fetchPersonalInfo(token),
-          ]);
+        const [
+          readinessTrend,
+          activityTrend,
+          heartRate,
+          personalInfo,
+          spo2Data,
+          stressData,
+          resilienceData,
+          cvAgeData,
+          vo2Data,
+        ] = await Promise.all([
+          fetchDailyReadiness(token, weekBefore, latestDay),
+          fetchDailyActivity(token, weekBefore, latestDay),
+          fetchHeartRate(token, latestDay),
+          fetchPersonalInfo(token),
+          fetchDailySpO2(token, daysBeforeDate(latestDay, 1), latestDay).catch(() => []),
+          fetchDailyStress(token, daysBeforeDate(latestDay, 1), latestDay).catch(() => []),
+          fetchDailyResilience(token, daysBeforeDate(latestDay, 1), latestDay).catch(() => []),
+          fetchDailyCardiovascularAge(token, daysBeforeDate(latestDay, 1), latestDay).catch(() => []),
+          fetchVO2Max(token, daysBeforeDate(latestDay, 1), latestDay).catch(() => []),
+        ]);
 
         const sleep = sleepRecent.at(-1) ?? null;
         const readiness = readinessTrend.at(-1) ?? null;
@@ -91,8 +113,13 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
           readiness,
           activity,
           heartRate,
+          spo2: spo2Data.at(-1) ?? null,
+          stress: stressData.at(-1) ?? null,
+          resilience: resilienceData.at(-1) ?? null,
+          cardiovascularAge: cvAgeData.at(-1) ?? null,
+          vo2Max: vo2Data.at(-1) ?? null,
           sleepTrend: sleepRecent,
-          readinessTrend: readinessTrend,
+          readinessTrend,
           condition,
           latestDay,
         };
@@ -104,6 +131,11 @@ export async function fetchAllUsers(): Promise<UserHealth[]> {
           readiness: null,
           activity: null,
           heartRate: [],
+          spo2: null,
+          stress: null,
+          resilience: null,
+          cardiovascularAge: null,
+          vo2Max: null,
           sleepTrend: [],
           readinessTrend: [],
           condition: "fair",

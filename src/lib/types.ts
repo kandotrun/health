@@ -69,6 +69,43 @@ export interface PersonalInfo {
   email: string | null;
 }
 
+export interface DailySpO2 {
+  id: string;
+  day: string;
+  spo2_percentage: { average: number } | null;
+  breathing_disturbance_index: number | null;
+}
+
+export interface DailyStress {
+  id: string;
+  day: string;
+  stress_high: number | null;
+  recovery_high: number | null;
+  day_summary: string | null;
+}
+
+export interface DailyResilience {
+  id: string;
+  day: string;
+  level: string | null;
+  contributors: {
+    sleep_recovery: number | null;
+    daytime_recovery: number | null;
+    stress: number | null;
+  };
+}
+
+export interface DailyCardiovascularAge {
+  day: string;
+  vascular_age: number | null;
+}
+
+export interface VO2Max {
+  id: string;
+  day: string;
+  vo2_max: number | null;
+}
+
 // ── App types ──
 
 export type ConditionLevel = "great" | "good" | "fair" | "low";
@@ -80,6 +117,11 @@ export interface UserHealth {
   readiness: DailyReadiness | null;
   activity: DailyActivity | null;
   heartRate: HeartRateEntry[];
+  spo2: DailySpO2 | null;
+  stress: DailyStress | null;
+  resilience: DailyResilience | null;
+  cardiovascularAge: DailyCardiovascularAge | null;
+  vo2Max: VO2Max | null;
   sleepTrend: DailySleep[];
   readinessTrend: DailyReadiness[];
   condition: ConditionLevel;

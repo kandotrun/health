@@ -110,6 +110,37 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
         <Stat label="resting" value={restingHR ? `${restingHR}` : "—"} unit={restingHR ? "bpm" : undefined} />
       </div>
 
+      {/* Gen4 Stats */}
+      {(user.spo2 || user.stress || user.resilience || user.cardiovascularAge || user.vo2Max) && (
+        <div className="px-5 py-3.5 grid grid-cols-2 gap-3 border-t border-black/[0.04]">
+          {user.spo2?.spo2_percentage && (
+            <Stat label="SpO2" value={`${user.spo2.spo2_percentage.average}`} unit="%" />
+          )}
+          {user.stress && (
+            <Stat
+              label="stress"
+              value={user.stress.day_summary ?? "—"}
+            />
+          )}
+          {user.resilience && (
+            <Stat
+              label="resilience"
+              value={user.resilience.level ?? "—"}
+            />
+          )}
+          {user.cardiovascularAge?.vascular_age != null && (
+            <Stat
+              label="血管年齢"
+              value={`${user.cardiovascularAge.vascular_age}`}
+              unit="歳"
+            />
+          )}
+          {user.vo2Max?.vo2_max != null && (
+            <Stat label="VO2 Max" value={`${user.vo2Max.vo2_max}`} />
+          )}
+        </div>
+      )}
+
       {/* Winner */}
       {isWinner && (
         <div className="px-5 py-2.5 border-t border-amber-200/40 bg-amber-50/50 text-center">
@@ -123,11 +154,8 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
 }
 
 function isStale(day: string): boolean {
-  const now = new Date();
-  const dataDate = new Date(day + "T00:00:00");
-  const diffMs = now.getTime() - dataDate.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  return diffDays > 1;
+  const today = new Date().toISOString().slice(0, 10);
+  return day !== today;
 }
 
 function daysAgoLabel(day: string): string {
