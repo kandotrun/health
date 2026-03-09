@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -25,7 +25,7 @@ interface TrendChartProps {
 export default function TrendChart({ data, label, color }: TrendChartProps) {
   if (data.length === 0) {
     return (
-      <div className="h-28 flex items-center justify-center text-neutral-400 text-xs">
+      <div className="h-32 flex items-center justify-center text-slate-400 text-xs">
         データなし
       </div>
     );
@@ -39,59 +39,64 @@ export default function TrendChart({ data, label, color }: TrendChartProps) {
   return (
     <div>
       {label && (
-        <h4 className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono mb-2">
-          {label}
-        </h4>
+        <h4 className="text-xs text-slate-400 font-medium mb-2">{label}</h4>
       )}
-      <div className="h-28 w-full">
+      <div className="h-32 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <AreaChart
             data={formatted}
             margin={{ top: 4, right: 4, bottom: 0, left: -24 }}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" />
+            <defs>
+              <linearGradient id={`trend-${label}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.12} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.01} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: "#a3a3a3" }}
+              tick={{ fontSize: 10, fill: "#94a3b8" }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               domain={[0, 100]}
-              tick={{ fontSize: 10, fill: "#a3a3a3" }}
+              tick={{ fontSize: 10, fill: "#94a3b8" }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               contentStyle={{
                 borderRadius: "10px",
-                border: "1px solid rgba(0,0,0,0.06)",
-                background: "rgba(255,255,255,0.85)",
-                backdropFilter: "blur(8px)",
+                border: "1px solid #e2e8f0",
+                background: "#fff",
                 fontSize: "11px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
               }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="sleep"
               stroke={color}
               strokeWidth={2}
+              fill={`url(#trend-${label})`}
               dot={{ r: 2.5, fill: color }}
               name="睡眠"
               connectNulls
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="readiness"
               stroke={`${color}88`}
               strokeWidth={1.5}
+              fill="none"
               strokeDasharray="4 3"
               dot={{ r: 2, fill: `${color}88` }}
               name="回復"
               connectNulls
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </div>

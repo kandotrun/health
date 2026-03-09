@@ -2,14 +2,14 @@ import Link from "next/link";
 import type { UserHealth } from "@/lib/types";
 import { conditionConfig, computePowerLevel } from "@/lib/condition";
 import ScoreRing from "./ScoreRing";
+import MiniMetric from "./MiniMetric";
 
 interface BattleCardProps {
   user: UserHealth;
-  side: "left" | "right";
   isWinner: boolean;
 }
 
-export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
+export default function BattleCard({ user, isWinner }: BattleCardProps) {
   const cfg = conditionConfig[user.condition];
   const power = computePowerLevel(user.sleep, user.readiness, user.activity);
 
@@ -24,137 +24,155 @@ export default function BattleCard({ user, side, isWinner }: BattleCardProps) {
 
   const steps = user.activity?.steps ?? 0;
   const calories = user.activity?.active_calories ?? 0;
+  const distance = user.activity
+    ? (user.activity.equivalent_walking_distance / 1000).toFixed(1)
+    : "0";
 
-  const slideClass =
-    side === "left" ? "animate-slide-left" : "animate-slide-right";
+  const stale = user.latestDay ? isStale(user.latestDay) : false;
 
-  const powerBarClass =
-    power >= 85 ? "power-bar-top" : power >= 70 ? "power-bar-high" : "power-bar";
+  // Build mini trend from sleepTrend
+  const sleepTrend = user.sleepTrend
+    .map((s) => s.score)
+    .filter((s): s is number => s != null);
 
   if (user.error) {
     return (
-      <div className={`${slideClass} glass rounded-2xl p-6 flex-1`}>
-        <h2 className="text-lg font-semibold capitalize mb-2">{user.name}</h2>
-        <p className="text-neutral-400 text-sm">{user.error}</p>
+      <div className="card p-6 flex-1 animate-fade-up">
+        <h2 className="text-lg font-bold capitalize mb-2">{user.name}</h2>
+        <p className="text-slate-400 text-sm">{user.error}</p>
       </div>
     );
   }
 
-  const stale = user.latestDay ? isStale(user.latestDay) : false;
-
   return (
     <div
-      className={`${slideClass} glass-strong rounded-2xl flex-1 overflow-hidden ${
-        isWinner ? "ring-2 ring-amber-400/50 shadow-lg shadow-amber-200/20" : "shadow-sm"
+      className={`card card-interactive flex-1 overflow-hidden animate-fade-up ${
+        isWinner ? "ring-2 ring-blue-400/40" : ""
       }`}
     >
-      {/* Stale warning */}
-      {stale && user.latestDay && (
-        <div className="px-5 pt-4">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200/60 text-amber-600 text-[11px] font-medium">
-            ⏰ {daysAgoLabel(user.latestDay)}のデータ
-          </span>
-        </div>
-      )}
-
       {/* Header */}
-      <div className={`px-5 ${stale ? "pt-3" : "pt-5"} pb-3 flex items-start justify-between`}>
+      <div className="p-5 pb-3 flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-bold tracking-tight">{user.name}</h2>
-          <p className="text-neutral-400 text-[11px] mt-0.5 font-mono">
-            {user.latestDay ?? "—"}
-          </p>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold capitalize tracking-tight">
+              {user.name}
+            </h2>
+            {isWinner && (
+              <span className="score-badge bg-amber-50 text-amber-600">
+                👑 勝利
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-xs text-slate-400 font-mono">
+              {user.latestDay ?? "—"}
+            </span>
+            {stale && user.latestDay && (
+              <span className="score-badge bg-amber-50 text-amber-500 text-[10px]">
+                {daysAgoLabel(user.latestDay)}前
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col items-center">
-          <span
-            className={`text-3xl font-black ${cfg.color}`}
-            style={{ lineHeight: 1 }}
-          >
-            {cfg.rank}
-          </span>
-          <span className="text-[10px] font-semibold text-neutral-400 mt-1">
-            {cfg.label}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <span className={`text-2xl font-black ${cfg.color}`}>
+              {cfg.rank}
+            </span>
+            <p className="text-[10px] text-slate-400">{cfg.label}</p>
+          </div>
         </div>
       </div>
 
-      {/* Power Level */}
+      {/* Power bar */}
       <div className="px-5 pb-4">
-        <div className="flex items-baseline justify-between mb-1.5">
-          <span className="text-[10px] text-neutral-400 tracking-widest font-mono">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[10px] text-slate-400 font-medium">
             戦闘力
           </span>
-          <span className="text-sm font-bold tabular-nums font-mono">
+          <span className="text-xs font-bold tabular-nums text-slate-600">
             {power}
           </span>
         </div>
-        <div className="h-1.5 bg-black/[0.04] rounded-full overflow-hidden">
+        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full ${powerBarClass} transition-all duration-1000 ease-out`}
-            style={{ width: `${power}%` }}
+            className="h-full rounded-full transition-all duration-1000 ease-out"
+            style={{
+              width: `${power}%`,
+              background:
+                power >= 85
+                  ? "linear-gradient(90deg, #22c55e, #16a34a)"
+                  : power >= 70
+                  ? "linear-gradient(90deg, #3b82f6, #2563eb)"
+                  : power >= 50
+                  ? "linear-gradient(90deg, #f59e0b, #d97706)"
+                  : "linear-gradient(90deg, #ef4444, #dc2626)",
+            }}
           />
         </div>
       </div>
 
-      {/* Scores */}
-      <div className="px-5 py-4 flex justify-center gap-5 border-t border-black/[0.04]">
+      {/* Score rings */}
+      <div className="px-5 py-4 flex justify-center gap-6 border-t border-slate-50">
         <ScoreRing score={user.sleep?.score ?? null} label="睡眠" />
         <ScoreRing score={user.readiness?.score ?? null} label="回復" />
         <ScoreRing score={user.activity?.score ?? null} label="活動" />
       </div>
 
-      {/* Stats */}
-      <div className="px-5 py-3.5 grid grid-cols-2 gap-3 border-t border-black/[0.04]">
-        <Stat label="歩数" value={steps.toLocaleString()} />
-        <Stat label="消費" value={`${calories}`} unit="kcal" />
-        <Stat label="心拍" value={latestHR ? `${latestHR}` : "—"} unit={latestHR ? "bpm" : undefined} />
-        <Stat label="安静時" value={restingHR ? `${restingHR}` : "—"} unit={restingHR ? "bpm" : undefined} />
+      {/* Mini metrics row */}
+      <div className="px-4 pb-4 grid grid-cols-2 gap-2">
+        <MiniMetric
+          label="歩数"
+          value={steps.toLocaleString()}
+          icon="🚶"
+          trend={sleepTrend}
+          color="#3b82f6"
+        />
+        <MiniMetric
+          label="消費"
+          value={`${calories}`}
+          unit="kcal"
+          icon="🔥"
+          color="#ef4444"
+        />
+        <MiniMetric
+          label="心拍"
+          value={latestHR ? `${latestHR}` : "—"}
+          unit={latestHR ? "bpm" : undefined}
+          icon="❤️"
+          color="#ec4899"
+        />
+        <MiniMetric
+          label="安静時HR"
+          value={restingHR ? `${restingHR}` : "—"}
+          unit={restingHR ? "bpm" : undefined}
+          icon="💤"
+          color="#8b5cf6"
+        />
       </div>
 
-      {/* Gen4 Stats */}
+      {/* Gen4 row */}
       {(user.spo2 || user.stress || user.resilience || user.cardiovascularAge || user.vo2Max) && (
-        <div className="px-5 py-3.5 grid grid-cols-2 gap-3 border-t border-black/[0.04]">
+        <div className="px-4 pb-4 grid grid-cols-2 gap-2">
           {user.spo2?.spo2_percentage && (
-            <Stat label="血中酸素" value={`${user.spo2.spo2_percentage.average}`} unit="%" />
+            <MiniMetric label="血中酸素" value={`${user.spo2.spo2_percentage.average}`} unit="%" icon="🫁" color="#06b6d4" />
           )}
-          {user.stress && (
-            <Stat
-              label="ストレス"
-              value={user.stress.day_summary ?? "—"}
-            />
-          )}
-          {user.resilience && (
-            <Stat
-              label="回復力"
-              value={user.resilience.level ?? "—"}
-            />
+          {user.stress?.day_summary && (
+            <MiniMetric label="ストレス" value={user.stress.day_summary} icon="🧠" color="#f59e0b" />
           )}
           {user.cardiovascularAge?.vascular_age != null && (
-            <Stat
-              label="血管年齢"
-              value={`${user.cardiovascularAge.vascular_age}`}
-              unit="歳"
-            />
+            <MiniMetric label="血管年齢" value={`${user.cardiovascularAge.vascular_age}`} unit="歳" icon="🫀" color="#ef4444" />
           )}
           {user.vo2Max?.vo2_max != null && (
-            <Stat label="最大酸素摂取量" value={`${user.vo2Max.vo2_max}`} />
+            <MiniMetric label="VO2 Max" value={`${user.vo2Max.vo2_max}`} icon="🏃" color="#22c55e" />
           )}
-        </div>
-      )}
-
-      {/* Winner */}
-      {isWinner && (
-        <div className="px-5 py-2.5 border-t border-amber-200/40 bg-amber-50/50 text-center">
-          <span className="text-amber-600 text-xs font-bold tracking-widest">
-            👑 勝利
-          </span>
         </div>
       )}
 
       {/* Detail link */}
       <Link
         href={`/user/${user.name.toLowerCase()}`}
-        className="block px-5 py-3 border-t border-black/[0.04] text-center text-xs text-neutral-400 hover:text-neutral-600 hover:bg-black/[0.02] transition font-mono"
+        className="block px-5 py-3 border-t border-slate-50 text-center text-xs text-blue-500 hover:bg-blue-50/50 transition font-medium"
       >
         詳細を見る →
       </Link>
@@ -172,34 +190,10 @@ function daysAgoLabel(day: string): string {
   const dataDate = new Date(day + "T00:00:00");
   const diffMs = now.getTime() - dataDate.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays < 30) return `${diffDays}日前`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}ヶ月前`;
+  if (diffDays < 30) return `${diffDays}日`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)}ヶ月`;
   const years = Math.floor(diffDays / 365);
   const remainMonths = Math.floor((diffDays % 365) / 30);
-  if (remainMonths === 0) return `${years}年前`;
-  return `約${years}年${remainMonths}ヶ月前`;
-}
-
-function Stat({
-  label,
-  value,
-  unit,
-}: {
-  label: string;
-  value: string;
-  unit?: string;
-}) {
-  return (
-    <div>
-      <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono">
-        {label}
-      </span>
-      <div className="flex items-baseline gap-1 mt-0.5">
-        <span className="text-sm font-semibold tabular-nums">{value}</span>
-        {unit && (
-          <span className="text-[10px] text-neutral-400">{unit}</span>
-        )}
-      </div>
-    </div>
-  );
+  if (remainMonths === 0) return `${years}年`;
+  return `約${years}年${remainMonths}ヶ月`;
 }

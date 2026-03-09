@@ -22,16 +22,30 @@ const activityLabels: Record<string, string> = {
   yoga: "ヨガ",
   hiit: "HIIT",
   strength_training: "筋トレ",
-  dancing: "ダンス",
-  pilates: "ピラティス",
-  hiking: "ハイキング",
   other: "その他",
+};
+
+const activityIcons: Record<string, string> = {
+  walking: "🚶",
+  running: "🏃",
+  cycling: "🚴",
+  swimming: "🏊",
+  soccer: "⚽",
+  yoga: "🧘",
+  hiit: "💪",
+  strength_training: "🏋️",
 };
 
 const intensityLabels: Record<string, string> = {
   easy: "軽め",
   moderate: "普通",
   hard: "ハード",
+};
+
+const intensityColors: Record<string, string> = {
+  easy: "bg-green-50 text-green-600",
+  moderate: "bg-blue-50 text-blue-600",
+  hard: "bg-red-50 text-red-600",
 };
 
 function durationMin(start: string, end: string): number {
@@ -43,13 +57,12 @@ function durationMin(start: string, end: string): number {
 export default function WorkoutList({ workouts }: Props) {
   if (workouts.length === 0) {
     return (
-      <div className="py-6 text-center text-neutral-400 text-xs">
+      <div className="py-8 text-center text-slate-400 text-xs">
         ワークアウト記録なし
       </div>
     );
   }
 
-  // Show latest 20
   const sorted = [...workouts].sort(
     (a, b) => new Date(b.day).getTime() - new Date(a.day).getTime()
   );
@@ -60,24 +73,32 @@ export default function WorkoutList({ workouts }: Props) {
       {shown.map((w) => {
         const dur = durationMin(w.start_datetime, w.end_datetime);
         const dist = w.distance ? (w.distance / 1000).toFixed(1) : null;
+        const icon = activityIcons[w.activity] ?? "🏃";
         return (
           <div
             key={w.id}
-            className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-white/40 border border-black/[0.03]"
+            className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50/80 hover:bg-slate-100/80 transition"
           >
             <div className="flex items-center gap-3">
-              <span className="text-sm font-medium">
-                {activityLabels[w.activity] ?? w.activity}
-              </span>
-              <span className="text-[10px] text-neutral-400 font-mono">
-                {w.day}
-              </span>
+              <span className="text-lg">{icon}</span>
+              <div>
+                <span className="text-sm font-medium text-slate-700">
+                  {activityLabels[w.activity] ?? w.activity}
+                </span>
+                <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                  {w.day}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-4 text-xs text-neutral-500">
-              <span>{dur}分</span>
-              {dist && <span>{dist}km</span>}
-              {w.calories && <span>{w.calories}kcal</span>}
-              <span className="px-1.5 py-0.5 rounded bg-black/[0.04] text-[10px]">
+            <div className="flex items-center gap-3 text-xs text-slate-500">
+              <span className="tabular-nums">{dur}分</span>
+              {dist && <span className="tabular-nums">{dist}km</span>}
+              {w.calories && <span className="tabular-nums">{w.calories}kcal</span>}
+              <span
+                className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                  intensityColors[w.intensity] ?? "bg-slate-100 text-slate-500"
+                }`}
+              >
                 {intensityLabels[w.intensity] ?? w.intensity}
               </span>
             </div>
@@ -85,7 +106,7 @@ export default function WorkoutList({ workouts }: Props) {
         );
       })}
       {workouts.length > 20 && (
-        <p className="text-center text-[10px] text-neutral-400 pt-1">
+        <p className="text-center text-[10px] text-slate-400 pt-2">
           他 {workouts.length - 20} 件
         </p>
       )}

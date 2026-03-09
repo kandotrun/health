@@ -31,55 +31,47 @@ export default async function Home() {
   const hasMultiple = users.length > 1;
   const hasTie = hasMultiple && powers.filter((p) => p === maxPower).length > 1;
 
-  const trendColors = ["#6366f1", "#f43f5e", "#10b981", "#f59e0b"];
+  const trendColors = ["#3b82f6", "#ef4444", "#22c55e", "#f59e0b"];
 
   return (
-    <main className="min-h-screen py-10 px-4 sm:px-6">
+    <main className="min-h-screen py-8 px-4 sm:px-6">
       {/* Header */}
-      <header className="max-w-5xl mx-auto mb-8 text-center">
-        <p className="text-[10px] text-neutral-400 uppercase tracking-[0.3em] font-mono mb-1">
-          oura ring
-        </p>
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
-          arena
-        </h1>
+      <header className="max-w-6xl mx-auto mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800">
+            Oura Arena
+          </h1>
+          <p className="text-slate-400 text-sm mt-0.5">
+            チームウェルネスダッシュボード
+          </p>
+        </div>
+        <div className="text-xs text-slate-400 font-mono">
+          5分ごとに更新
+        </div>
       </header>
 
-      {/* Battle Area */}
-      <div className="max-w-5xl mx-auto">
+      {/* Battle Cards */}
+      <div className="max-w-6xl mx-auto">
         {users.length === 1 ? (
-          <div className="max-w-sm mx-auto">
-            <BattleCard user={users[0]} side="left" isWinner={false} />
+          <div className="max-w-md mx-auto">
+            <BattleCard user={users[0]} isWinner={false} />
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row gap-5 items-stretch">
-            <BattleCard
-              user={users[0]}
-              side="left"
-              isWinner={!hasTie && powers[0] === maxPower}
-            />
-
-            {/* VS */}
-            <div className="flex items-center justify-center py-2 lg:py-0">
-              <div className="animate-vs animate-float">
-                <span className="text-3xl font-black text-neutral-300/60 tracking-tighter select-none">
-                  vs
-                </span>
-              </div>
-            </div>
-
-            <BattleCard
-              user={users[1]}
-              side="right"
-              isWinner={!hasTie && powers[1] === maxPower}
-            />
+          <div className="flex flex-col lg:flex-row gap-5 items-start">
+            {users.map((user, i) => (
+              <BattleCard
+                key={user.name}
+                user={user}
+                isWinner={!hasTie && powers[i] === maxPower}
+              />
+            ))}
           </div>
         )}
 
         {hasMultiple && hasTie && maxPower > 0 && (
-          <div className="text-center mt-5">
-            <span className="text-neutral-400 font-mono text-xs uppercase tracking-widest">
-              draw
+          <div className="text-center mt-4">
+            <span className="score-badge bg-slate-100 text-slate-500 text-xs">
+              ⚔️ 引き分け
             </span>
           </div>
         )}
@@ -87,18 +79,18 @@ export default async function Home() {
 
       {/* Trends */}
       {users.some((u) => u.sleepTrend.length > 0) && (
-        <div className="max-w-5xl mx-auto mt-8">
-          <p className="text-[10px] text-neutral-400 uppercase tracking-[0.2em] font-mono mb-4 text-center">
-            7-day trend
-          </p>
+        <div className="max-w-6xl mx-auto mt-6">
+          <h2 className="text-sm font-semibold text-slate-500 mb-3">
+            7日間トレンド
+          </h2>
           <div
             className={`grid gap-4 ${
-              users.length > 1 ? "lg:grid-cols-2" : "max-w-sm mx-auto"
+              users.length > 1 ? "lg:grid-cols-2" : "max-w-md mx-auto"
             }`}
           >
             {users.map((user, i) => (
-              <div key={user.name} className="glass rounded-xl p-4">
-                <p className="text-xs font-semibold tracking-tight mb-2 text-neutral-500">
+              <div key={user.name} className="card p-5">
+                <p className="text-sm font-semibold text-slate-600 mb-2 capitalize">
                   {user.name}
                 </p>
                 <TrendChart
@@ -111,12 +103,6 @@ export default async function Home() {
           </div>
         </div>
       )}
-
-      <footer className="max-w-5xl mx-auto mt-10 text-center">
-        <span className="text-[10px] text-neutral-300 font-mono tracking-widest">
-          refresh · 5min
-        </span>
-      </footer>
     </main>
   );
 }

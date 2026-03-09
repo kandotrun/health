@@ -98,7 +98,7 @@ export default async function UserDetailPage({
       <div className="max-w-5xl mx-auto mb-6">
         <Link
           href="/"
-          className="text-xs text-neutral-400 hover:text-neutral-600 transition font-mono"
+          className="text-xs text-slate-400 hover:text-slate-600 transition font-mono"
         >
           ← arena
         </Link>
@@ -106,12 +106,12 @@ export default async function UserDetailPage({
 
       {/* Header */}
       <header className="max-w-5xl mx-auto mb-8">
-        <div className="glass-strong rounded-2xl p-6 flex items-center justify-between">
+        <div className="card rounded-2xl p-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight capitalize">
               {user.name}
             </h1>
-            <p className="text-neutral-400 text-xs font-mono mt-1">
+            <p className="text-slate-400 text-xs font-mono mt-1">
               {user.latestDay ?? "—"} · 過去90日のデータ
             </p>
           </div>
@@ -120,13 +120,13 @@ export default async function UserDetailPage({
               <span className={`text-4xl font-black ${cfg.color}`}>
                 {cfg.rank}
               </span>
-              <p className="text-[10px] text-neutral-400 mt-0.5">{cfg.label}</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">{cfg.label}</p>
             </div>
             <div className="text-center">
               <span className="text-3xl font-bold tabular-nums font-mono">
                 {power}
               </span>
-              <p className="text-[10px] text-neutral-400 mt-0.5">戦闘力</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">戦闘力</p>
             </div>
           </div>
         </div>
@@ -134,7 +134,7 @@ export default async function UserDetailPage({
 
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Score rings row */}
-        <div className="glass rounded-2xl p-6">
+        <div className="card rounded-2xl p-6">
           <div className="flex justify-center gap-8">
             <ScoreRing score={user.sleep?.score ?? null} label="睡眠" size={100} />
             <ScoreRing score={user.readiness?.score ?? null} label="回復" size={100} />
@@ -144,7 +144,7 @@ export default async function UserDetailPage({
 
         {/* Latest sleep detail */}
         {latestSleepDetail && (
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <h2 className="text-sm font-bold mb-4">最新の睡眠データ</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <DetailStat
@@ -185,7 +185,7 @@ export default async function UserDetailPage({
 
         {/* Sleep stages chart */}
         {sleepStagesData.length > 0 && (
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <h2 className="text-sm font-bold mb-4">睡眠ステージ（直近7日）</h2>
             <SleepStagesChart data={sleepStagesData} />
           </div>
@@ -194,7 +194,7 @@ export default async function UserDetailPage({
         {/* Contributors radar charts */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sleepContribs.length > 0 && (
-            <div className="glass rounded-2xl p-5">
+            <div className="card rounded-2xl p-5">
               <ContributorsChart
                 data={sleepContribs}
                 color="#6366f1"
@@ -203,7 +203,7 @@ export default async function UserDetailPage({
             </div>
           )}
           {readinessContribs.length > 0 && (
-            <div className="glass rounded-2xl p-5">
+            <div className="card rounded-2xl p-5">
               <ContributorsChart
                 data={readinessContribs}
                 color="#10b981"
@@ -212,7 +212,7 @@ export default async function UserDetailPage({
             </div>
           )}
           {activityContribs.length > 0 && (
-            <div className="glass rounded-2xl p-5">
+            <div className="card rounded-2xl p-5">
               <ContributorsChart
                 data={activityContribs}
                 color="#f59e0b"
@@ -223,7 +223,7 @@ export default async function UserDetailPage({
         </div>
 
         {/* 90-day history charts */}
-        <div className="glass rounded-2xl p-6">
+        <div className="card rounded-2xl p-6">
           <h2 className="text-sm font-bold mb-4">スコア推移（90日）</h2>
           <div className="space-y-6">
             <HistoryChart
@@ -246,7 +246,7 @@ export default async function UserDetailPage({
 
         {/* Steps & Calories history */}
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <HistoryChart
               data={activityHistory.map((a) => ({ day: a.day, value: a.steps }))}
               color="#8b5cf6"
@@ -254,7 +254,7 @@ export default async function UserDetailPage({
               domain={[0, Math.max(...activityHistory.map((a) => a.steps), 10000)]}
             />
           </div>
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <HistoryChart
               data={activityHistory.map((a) => ({ day: a.day, value: a.active_calories }))}
               color="#f43f5e"
@@ -267,7 +267,7 @@ export default async function UserDetailPage({
 
         {/* Temperature deviation */}
         {readinessHistory.some((r) => r.temperature_deviation != null) && (
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <HistoryChart
               data={readinessHistory
                 .filter((r) => r.temperature_deviation != null)
@@ -285,7 +285,7 @@ export default async function UserDetailPage({
 
         {/* Gen4 data */}
         {(user.spo2 || user.stress || user.resilience || user.cardiovascularAge || user.vo2Max) && (
-          <div className="glass rounded-2xl p-6">
+          <div className="card rounded-2xl p-6">
             <h2 className="text-sm font-bold mb-4">Gen4データ</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {user.spo2?.spo2_percentage && (
@@ -308,10 +308,10 @@ export default async function UserDetailPage({
         )}
 
         {/* Workouts */}
-        <div className="glass rounded-2xl p-6">
+        <div className="card rounded-2xl p-6">
           <h2 className="text-sm font-bold mb-4">
             ワークアウト履歴
-            <span className="text-neutral-400 font-normal ml-2 text-xs">
+            <span className="text-slate-400 font-normal ml-2 text-xs">
               {workouts.length}件
             </span>
           </h2>
@@ -320,7 +320,7 @@ export default async function UserDetailPage({
       </div>
 
       <footer className="max-w-5xl mx-auto mt-10 text-center">
-        <span className="text-[10px] text-neutral-300 font-mono tracking-widest">
+        <span className="text-[10px] text-slate-300 font-mono tracking-widest">
           refresh · 5min
         </span>
       </footer>
@@ -331,7 +331,7 @@ export default async function UserDetailPage({
 function DetailStat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-[10px] text-neutral-400 font-medium">{label}</span>
+      <span className="text-[10px] text-slate-400 font-medium">{label}</span>
       <p className="text-sm font-semibold mt-0.5">{value}</p>
     </div>
   );

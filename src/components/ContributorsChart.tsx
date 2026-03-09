@@ -22,7 +22,7 @@ export default function ContributorsChart({ data, color, title }: Props) {
 
   if (chartData.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-neutral-400 text-xs">
+      <div className="h-48 flex items-center justify-center text-slate-400 text-xs">
         データなし
       </div>
     );
@@ -30,20 +30,20 @@ export default function ContributorsChart({ data, color, title }: Props) {
 
   return (
     <div>
-      <h3 className="text-xs font-semibold text-neutral-500 mb-2">{title}</h3>
+      <h3 className="text-xs font-semibold text-slate-500 mb-2">{title}</h3>
       <div className="h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={chartData} cx="50%" cy="50%" outerRadius="70%">
-            <PolarGrid stroke="rgba(0,0,0,0.06)" />
+            <PolarGrid stroke="#e2e8f0" />
             <PolarAngleAxis
               dataKey="subject"
-              tick={{ fontSize: 10, fill: "#737373" }}
+              tick={{ fontSize: 10, fill: "#64748b" }}
             />
             <Tooltip
               contentStyle={{
                 borderRadius: "10px",
-                border: "1px solid rgba(0,0,0,0.06)",
-                background: "rgba(255,255,255,0.9)",
+                border: "1px solid #e2e8f0",
+                background: "#fff",
                 fontSize: "11px",
               }}
             />
@@ -51,7 +51,7 @@ export default function ContributorsChart({ data, color, title }: Props) {
               dataKey="value"
               stroke={color}
               fill={color}
-              fillOpacity={0.2}
+              fillOpacity={0.12}
               strokeWidth={2}
             />
           </RadarChart>

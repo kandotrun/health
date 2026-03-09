@@ -31,7 +31,7 @@ function minToHr(min: number): string {
 export default function SleepStagesChart({ data }: Props) {
   if (data.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center text-neutral-400 text-xs">
+      <div className="h-48 flex items-center justify-center text-slate-400 text-xs">
         データなし
       </div>
     );
@@ -51,12 +51,12 @@ export default function SleepStagesChart({ data }: Props) {
         <BarChart data={formatted} margin={{ top: 4, right: 4, bottom: 0, left: -16 }}>
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 10, fill: "#a3a3a3" }}
+            tick={{ fontSize: 10, fill: "#94a3b8" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: "#a3a3a3" }}
+            tick={{ fontSize: 10, fill: "#94a3b8" }}
             axisLine={false}
             tickLine={false}
             unit="m"
@@ -64,20 +64,17 @@ export default function SleepStagesChart({ data }: Props) {
           <Tooltip
             contentStyle={{
               borderRadius: "10px",
-              border: "1px solid rgba(0,0,0,0.06)",
-              background: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(8px)",
+              border: "1px solid #e2e8f0",
+              background: "#fff",
               fontSize: "11px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
             }}
             formatter={(value: number) => [`${minToHr(value)}`, undefined]}
           />
-          <Legend
-            wrapperStyle={{ fontSize: "11px" }}
-            iconSize={8}
-          />
-          <Bar dataKey="深い睡眠" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} />
+          <Legend wrapperStyle={{ fontSize: "11px" }} iconSize={8} />
+          <Bar dataKey="深い睡眠" stackId="a" fill="#3b82f6" radius={[0, 0, 0, 0]} />
           <Bar dataKey="REM" stackId="a" fill="#8b5cf6" />
-          <Bar dataKey="浅い睡眠" stackId="a" fill="#c4b5fd" />
+          <Bar dataKey="浅い睡眠" stackId="a" fill="#93c5fd" />
           <Bar dataKey="覚醒" stackId="a" fill="#fbbf24" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
