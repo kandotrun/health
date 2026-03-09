@@ -68,26 +68,27 @@ export async function GET(
     );
 
     const titleText = titles.map((t) => `${t.emoji} ${t.name}`).join("  ");
-    const textWidth = titleText.length * 10 + 20;
-    const labelWidth = 40;
+    const textWidth = titleText.length * 11 + 30;
+    const labelWidth = 50;
     const totalWidth = labelWidth + textWidth;
+    const height = 28;
 
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20">
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}">
   <linearGradient id="a" x2="0" y2="100%">
     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
     <stop offset="1" stop-opacity=".1"/>
   </linearGradient>
-  <clipPath id="r"><rect width="${totalWidth}" height="20" rx="3" fill="#fff"/></clipPath>
+  <clipPath id="r"><rect width="${totalWidth}" height="${height}" rx="4" fill="#fff"/></clipPath>
   <g clip-path="url(#r)">
-    <rect width="${labelWidth}" height="20" fill="#555"/>
-    <rect x="${labelWidth}" width="${textWidth}" height="20" fill="#8b5cf6"/>
+    <rect width="${labelWidth}" height="${height}" fill="#555"/>
+    <rect x="${labelWidth}" width="${textWidth}" height="${height}" fill="#8b5cf6"/>
   </g>
-  <rect width="${totalWidth}" height="20" fill="url(#a)"/>
-  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
-    <text x="${labelWidth / 2}" y="15" fill="#010101" fill-opacity=".3">称号</text>
-    <text x="${labelWidth / 2}" y="14">称号</text>
-    <text x="${labelWidth + textWidth / 2}" y="15" fill="#010101" fill-opacity=".3">${escapeXml(titleText)}</text>
-    <text x="${labelWidth + textWidth / 2}" y="14">${escapeXml(titleText)}</text>
+  <rect width="${totalWidth}" height="${height}" fill="url(#a)"/>
+  <g fill="#fff" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="14">
+    <text x="${labelWidth / 2}" y="${height / 2 + 5}" fill="#010101" fill-opacity=".3">称号</text>
+    <text x="${labelWidth / 2}" y="${height / 2 + 4}">称号</text>
+    <text x="${labelWidth + textWidth / 2}" y="${height / 2 + 5}" fill="#010101" fill-opacity=".3">${escapeXml(titleText)}</text>
+    <text x="${labelWidth + textWidth / 2}" y="${height / 2 + 4}">${escapeXml(titleText)}</text>
   </g>
 </svg>`;
 

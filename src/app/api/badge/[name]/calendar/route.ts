@@ -43,11 +43,11 @@ export async function GET(
     const current = new Date(startDate);
     current.setDate(current.getDate() - current.getDay());
 
-    const cellSize = 10;
-    const cellGap = 2;
+    const cellSize = 14;
+    const cellGap = 3;
     const totalCell = cellSize + cellGap;
-    const labelW = 36;
-    const headerH = 18;
+    const labelW = 44;
+    const headerH = 24;
 
     const allWeeks: { day: string; date: Date; score: number | null; dow: number }[][] = [];
     let weekBuf: typeof allWeeks[0] = [];
@@ -91,11 +91,11 @@ export async function GET(
     }
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}">
-  <rect width="${svgW}" height="${svgH}" rx="4" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-  <text x="4" y="12" font-size="10" font-family="Verdana,sans-serif" fill="#555" font-weight="600">${title} avg:${avg}</text>
-  <text x="4" y="${headerH + 1 * totalCell + 8}" font-size="8" font-family="Verdana,sans-serif" fill="#94a3b8">Mo</text>
-  <text x="4" y="${headerH + 3 * totalCell + 8}" font-size="8" font-family="Verdana,sans-serif" fill="#94a3b8">We</text>
-  <text x="4" y="${headerH + 5 * totalCell + 8}" font-size="8" font-family="Verdana,sans-serif" fill="#94a3b8">Fr</text>
+  <rect width="${svgW}" height="${svgH}" rx="6" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="8" y="16" font-size="13" font-family="Inter,system-ui,sans-serif" fill="#334155" font-weight="600">${title} avg:${avg}</text>
+  <text x="8" y="${headerH + 1 * totalCell + 11}" font-size="11" font-family="Inter,system-ui,sans-serif" fill="#94a3b8">Mo</text>
+  <text x="8" y="${headerH + 3 * totalCell + 11}" font-size="11" font-family="Inter,system-ui,sans-serif" fill="#94a3b8">We</text>
+  <text x="8" y="${headerH + 5 * totalCell + 11}" font-size="11" font-family="Inter,system-ui,sans-serif" fill="#94a3b8">Fr</text>
   ${cells}
 </svg>`;
 

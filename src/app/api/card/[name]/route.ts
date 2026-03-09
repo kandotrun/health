@@ -73,13 +73,13 @@ function scoreArc(cx: number, cy: number, r: number, score: number, color: strin
   const large = angle > 180 ? 1 : 0;
 
   return `
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e2e8f0" stroke-width="4" />
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e2e8f0" stroke-width="5" />
     <path d="M ${cx} ${cy - r} A ${r} ${r} 0 ${large} 1 ${x.toFixed(1)} ${y.toFixed(1)}" 
-          fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" />
-    <text x="${cx}" y="${cy + 1}" text-anchor="middle" dominant-baseline="middle"
-          font-size="16" font-weight="700" fill="#334155" font-family="Inter,system-ui,sans-serif">${score}</text>
-    <text x="${cx}" y="${cy + r + 14}" text-anchor="middle"
-          font-size="9" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">${label}</text>
+          fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" />
+    <text x="${cx}" y="${cy + 2}" text-anchor="middle" dominant-baseline="middle"
+          font-size="20" font-weight="700" fill="#334155" font-family="Inter,system-ui,sans-serif">${score}</text>
+    <text x="${cx}" y="${cy + r + 18}" text-anchor="middle"
+          font-size="12" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">${label}</text>
   `;
 }
 
@@ -97,7 +97,7 @@ function sparkline(data: (number | null)[], x: number, y: number, w: number, h: 
     return `${px.toFixed(1)},${py.toFixed(1)}`;
   });
 
-  return `<polyline points="${points.join(" ")}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" />`;
+  return `<polyline points="${points.join(" ")}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
 }
 
 export async function GET(
@@ -164,8 +164,8 @@ export async function GET(
   const sleepSparkData = sleepData.slice(-14).map((s) => s.score);
   const readinessSparkData = readinessData.slice(-14).map((r) => r.score);
 
-  const cardWidth = 420;
-  const cardHeight = 200;
+  const cardWidth = 600;
+  const cardHeight = 280;
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}">
   <defs>
@@ -177,49 +177,48 @@ export async function GET(
   <g clip-path="url(#roundedCard)">
     <!-- Background -->
     <rect width="${cardWidth}" height="${cardHeight}" fill="#ffffff" />
-    <rect width="${cardWidth}" height="${cardHeight}" fill="url(#bg)" opacity="0.5" />
 
     <!-- Border -->
     <rect width="${cardWidth}" height="${cardHeight}" rx="16" fill="none" stroke="#e2e8f0" stroke-width="1" />
 
     <!-- Header -->
-    <text x="20" y="28" font-size="14" font-weight="700" fill="#1e293b" font-family="Inter,system-ui,sans-serif">
+    <text x="28" y="36" font-size="20" font-weight="700" fill="#1e293b" font-family="Inter,system-ui,sans-serif">
       ${userConfig.name}
     </text>
-    <text x="20" y="42" font-size="9" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">
+    <text x="28" y="54" font-size="12" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">
       ${latestSleepDay} · Oura Arena
     </text>
 
     <!-- Rank badge -->
-    <rect x="${cardWidth - 70}" y="12" width="52" height="28" rx="8" fill="${condition.color}" opacity="0.1" />
-    <text x="${cardWidth - 44}" y="24" text-anchor="middle" font-size="12" font-weight="800" fill="${condition.color}" font-family="Inter,system-ui,sans-serif">
+    <rect x="${cardWidth - 90}" y="16" width="68" height="38" rx="10" fill="${condition.color}" opacity="0.1" />
+    <text x="${cardWidth - 56}" y="36" text-anchor="middle" font-size="18" font-weight="800" fill="${condition.color}" font-family="Inter,system-ui,sans-serif">
       ${condition.rank}
     </text>
-    <text x="${cardWidth - 44}" y="35" text-anchor="middle" font-size="7" fill="${condition.color}" font-family="Inter,system-ui,sans-serif">
+    <text x="${cardWidth - 56}" y="49" text-anchor="middle" font-size="10" fill="${condition.color}" font-family="Inter,system-ui,sans-serif">
       ${condition.label}
     </text>
 
     <!-- Score rings -->
-    ${scoreArc(70, 100, 28, sleepScore, "#6366f1", "睡眠")}
-    ${scoreArc(150, 100, 28, readinessScore, "#22c55e", "回復")}
-    ${scoreArc(230, 100, 28, activityScore, "#f59e0b", "活動")}
+    ${scoreArc(90, 130, 38, sleepScore, "#6366f1", "睡眠")}
+    ${scoreArc(200, 130, 38, readinessScore, "#22c55e", "回復")}
+    ${scoreArc(310, 130, 38, activityScore, "#f59e0b", "活動")}
 
     <!-- Power bar -->
-    <text x="290" y="78" font-size="8" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">戦闘力</text>
-    <text x="${cardWidth - 18}" y="78" text-anchor="end" font-size="11" font-weight="700" fill="#334155" font-family="Inter,system-ui,sans-serif">${power}</text>
-    <rect x="290" y="84" width="112" height="6" rx="3" fill="#e2e8f0" />
-    <rect x="290" y="84" width="${Math.round(112 * power / 100)}" height="6" rx="3" fill="${condition.color}" />
+    <text x="400" y="100" font-size="12" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">戦闘力</text>
+    <text x="${cardWidth - 24}" y="100" text-anchor="end" font-size="16" font-weight="700" fill="#334155" font-family="Inter,system-ui,sans-serif">${power}</text>
+    <rect x="400" y="108" width="172" height="8" rx="4" fill="#e2e8f0" />
+    <rect x="400" y="108" width="${Math.round(172 * power / 100)}" height="8" rx="4" fill="${condition.color}" />
 
     <!-- Steps & Calories -->
-    <text x="290" y="110" font-size="8" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">🚶 ${steps.toLocaleString()} 歩</text>
-    <text x="290" y="124" font-size="8" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">🔥 ${calories} kcal</text>
+    <text x="400" y="140" font-size="12" fill="#64748b" font-family="Inter,system-ui,sans-serif">🚶 ${steps.toLocaleString()} 歩</text>
+    <text x="400" y="160" font-size="12" fill="#64748b" font-family="Inter,system-ui,sans-serif">🔥 ${calories} kcal</text>
 
     <!-- Sparklines -->
-    <text x="20" y="160" font-size="8" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">睡眠 14日間</text>
-    ${sparkline(sleepSparkData, 20, 164, 170, 20, "#6366f1")}
+    <text x="28" y="215" font-size="11" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">睡眠 14日間</text>
+    ${sparkline(sleepSparkData, 28, 222, 240, 30, "#6366f1")}
 
-    <text x="220" y="160" font-size="8" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">回復 14日間</text>
-    ${sparkline(readinessSparkData, 220, 164, 170, 20, "#22c55e")}
+    <text x="310" y="215" font-size="11" fill="#94a3b8" font-family="Inter,system-ui,sans-serif">回復 14日間</text>
+    ${sparkline(readinessSparkData, 310, 222, 240, 30, "#22c55e")}
   </g>
 </svg>`;
 
