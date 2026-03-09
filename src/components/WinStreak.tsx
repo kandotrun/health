@@ -31,7 +31,7 @@ export default function WinStreak({ users }: Props) {
   const diff = powers[winnerIdx] - powers[1 - winnerIdx];
 
   return (
-    <div className="card p-4 text-center">
+    <div className="card p-4 text-center animate-scale-in animate-pulse-glow">
       <div className="flex items-center justify-center gap-3">
         <span className="text-2xl">🔥</span>
         <div>

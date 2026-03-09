@@ -34,7 +34,7 @@ export default function StressBattle({ users }: Props) {
   if (stressUsers.length === 0) return null;
 
   return (
-    <div className="card rounded-2xl p-5">
+    <div className="card rounded-2xl p-5 animate-fade-up animate-delay-300">
       <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
         <span>⚔️</span> ストレスバトル
       </h2>

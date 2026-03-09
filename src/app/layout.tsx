@@ -10,7 +10,29 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Oura Arena",
-  description: "Team wellness battle dashboard",
+  description: "チームウェルネスバトルダッシュボード — Oura Ring APIで健康データを可視化・対戦",
+  metadataBase: new URL("https://oura-arena.vercel.app"),
+  openGraph: {
+    title: "Oura Arena",
+    description: "チームウェルネスバトルダッシュボード — 睡眠・回復・活動を可視化して対戦",
+    url: "https://oura-arena.vercel.app",
+    siteName: "Oura Arena",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Oura Arena Dashboard",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Oura Arena",
+    description: "チームウェルネスバトルダッシュボード",
+    images: ["/api/og"],
+  },
 };
 
 export default function RootLayout({
