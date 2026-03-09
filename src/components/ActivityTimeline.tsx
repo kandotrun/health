@@ -47,7 +47,8 @@ export default function ActivityTimeline({ workouts }: Props) {
     const start = new Date(w.start_datetime);
     const end = new Date(w.end_datetime);
     const durMin = (end.getTime() - start.getTime()) / 60000;
-    const hourOfDay = start.getHours() + start.getMinutes() / 60;
+    const jst = new Date(start.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+    const hourOfDay = jst.getHours() + jst.getMinutes() / 60;
 
     return {
       day: w.day,

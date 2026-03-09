@@ -42,16 +42,19 @@ function stdDev(nums: number[]): number {
   return Math.sqrt(nums.reduce((sum, n) => sum + (n - m) ** 2, 0) / nums.length);
 }
 
+function toJST(date: Date): Date {
+  return new Date(date.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+}
+
 function getBedtimeHour(s: SleepDetail): number {
-  const h = new Date(s.bedtime_start).getHours();
-  const m = new Date(s.bedtime_start).getMinutes();
-  const hour = h + m / 60;
+  const jst = toJST(new Date(s.bedtime_start));
+  const hour = jst.getHours() + jst.getMinutes() / 60;
   return hour < 12 ? hour + 24 : hour; // normalize: 0-11 → 24-35
 }
 
 function getWakeHour(s: SleepDetail): number {
-  const d = new Date(s.bedtime_end);
-  return d.getHours() + d.getMinutes() / 60;
+  const jst = toJST(new Date(s.bedtime_end));
+  return jst.getHours() + jst.getMinutes() / 60;
 }
 
 function toMin(sec: number): number {

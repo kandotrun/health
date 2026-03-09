@@ -8,6 +8,15 @@ import { conditionConfig, computePowerLevel } from "@/lib/condition";
 import ScoreRing from "@/components/ScoreRing";
 import HistoryChart from "@/components/HistoryChart";
 import SleepStagesChart from "@/components/SleepStagesChart";
+
+// JST変換ヘルパー
+function toJSTHours(date: Date): number {
+  const jst = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+  return jst.getHours() + jst.getMinutes() / 60;
+}
+function toJSTDate(date: Date): Date {
+  return new Date(date.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+}
 import ContributorsChart from "@/components/ContributorsChart";
 import TrendChart from "@/components/TrendChart";
 import WorkoutList from "@/components/WorkoutList";
@@ -91,8 +100,8 @@ export default async function UserDetailPage({
   const sleepTimelineData = sleepDetailsLong.map((s) => {
     const bedtime = new Date(s.bedtime_start);
     const wake = new Date(s.bedtime_end);
-    const bedHour = bedtime.getHours() + bedtime.getMinutes() / 60;
-    const wakeHour = wake.getHours() + wake.getMinutes() / 60;
+    const bedHour = toJSTHours(bedtime);
+    const wakeHour = toJSTHours(wake);
     const durationHours = s.total_sleep_duration / 3600;
     return {
       day: s.day,
@@ -155,7 +164,7 @@ export default async function UserDetailPage({
 
   // Sleep regularity (std dev of bedtime)
   const bedtimeHours = sleepDetailsLong.map((s) => {
-    const h = new Date(s.bedtime_start).getHours() + new Date(s.bedtime_start).getMinutes() / 60;
+    const h = toJSTHours(new Date(s.bedtime_start));
     return h < 18 ? h + 24 : h;
   });
   const avgBedtimeAll = bedtimeHours.length > 0 ? bedtimeHours.reduce((a, b) => a + b, 0) / bedtimeHours.length : 0;
