@@ -51,14 +51,21 @@ export default async function Home() {
         </div>
       </header>
 
-      {/* Battle Cards */}
+      {/* Win Streak — 一番上 */}
+      {hasMultiple && (
+        <div className="max-w-6xl mx-auto mb-4">
+          <WinStreak users={users} />
+        </div>
+      )}
+
+      {/* Battle Cards — 横並び */}
       <div className="max-w-6xl mx-auto">
         {users.length === 1 ? (
           <div className="max-w-md mx-auto">
             <BattleCard user={users[0]} isWinner={false} />
           </div>
         ) : (
-          <div className="flex flex-col gap-5 max-w-xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-5 items-start">
             {users.map((user, i) => (
               <BattleCard
                 key={user.name}
@@ -78,20 +85,13 @@ export default async function Home() {
         )}
       </div>
 
-      {/* Win Streak */}
-      {hasMultiple && (
-        <div className="max-w-6xl mx-auto mt-4">
-          <WinStreak users={users} />
-        </div>
-      )}
-
       {/* Trends */}
       {users.some((u) => u.sleepTrend.length > 0) && (
         <div className="max-w-6xl mx-auto mt-6">
           <h2 className="text-sm font-semibold text-slate-500 mb-3">
             7日間トレンド
           </h2>
-          <div className="flex flex-col gap-4 max-w-xl mx-auto">
+          <div className={`grid gap-4 ${users.length > 1 ? "lg:grid-cols-2" : "max-w-md mx-auto"}`}>
             {users.map((user, i) => (
               <div key={user.name} className="card p-5">
                 <p className="text-sm font-semibold text-slate-600 mb-2 capitalize">
